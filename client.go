@@ -1,6 +1,7 @@
 package twitchirc
 
 import (
+	"fmt"
 	"net"
 	"net/textproto"
 	"time"
@@ -41,5 +42,11 @@ func (c *Client) setTCPConn() error {
 			c.conn = &conn
 		}
 	}
+	return err
+}
+func (c *Client) Write(msg string) error {
+	msg = string(msg + "\r\n")
+	_, err := fmt.Fprint(c.conn, msg)
+
 	return err
 }
