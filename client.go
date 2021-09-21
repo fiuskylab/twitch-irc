@@ -44,8 +44,20 @@ func (c *Client) setTCPConn() error {
 	}
 	return err
 }
+// Write receives a string and write it
+// into IRC TCP connection, don't need
+// to add "\r\n" at the end of the string.
 func (c *Client) Write(msg string) error {
-	msg = string(msg + "\r\n")
+	l := len(msg)
+
+	if l < 3 {
+		return fmt.Errorf("Message with lenght < 3")
+	}
+
+	if msg[l-2:] != "\r\n" {
+		msg = string(msg + "\r\n")
+	}
+
 	_, err := fmt.Fprint(c.conn, msg)
 
 	return err
