@@ -1,12 +1,3 @@
-# twitch-irc
-Package to handle Twitch's IRC connection and message
-
-## Example
-
-Import
-- > go get github.com/fiuskylab/twitch-irc
-
-```golang
 package main
 
 import (
@@ -45,4 +36,3 @@ func main() {
 		}
 	}
 }
-```
