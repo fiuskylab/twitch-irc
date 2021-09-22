@@ -61,7 +61,11 @@ func (c *Client) connectIRC() error {
 		return err
 	}
 	if err := c.
-		Write(string("NICK " + c.cfg.OAuthToken)); err != nil {
+		Write(string("NICK " + c.cfg.BotUsername)); err != nil {
+		return err
+	}
+	if err := c.
+		Write(string("JOIN #" + c.cfg.Channel)); err != nil {
 		return err
 	}
 	return nil
