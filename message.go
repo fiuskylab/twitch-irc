@@ -7,6 +7,9 @@ import (
 // Message refers to each line read
 // in IRC connection
 type Message struct {
+	// Channel is which channel the
+	// message was sent
+	Channel string
 	// Sender the username of who sent
 	// the Message
 	Sender string
@@ -51,7 +54,7 @@ func parseLine(line string) (msg Message) {
 
 	colonPos := strings.IndexByte(channelAndMessage, byte(':'))
 
-	_ = channelAndMessage[:colonPos-2]
+	msg.Channel = channelAndMessage[:colonPos-1]
 
 	msg.Text = channelAndMessage[colonPos+1:]
 
