@@ -17,7 +17,7 @@ type Client struct {
 }
 
 const (
-	IRC_URL = "irc://irc.chat.twitch.tv:6667"
+	IRC_URL = "irc.chat.twitch.tv:6667"
 )
 
 // NewClient returns a Client instance
