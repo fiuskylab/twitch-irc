@@ -57,11 +57,11 @@ func (c *Client) setTCPConn() error {
 
 func (c *Client) connectIRC() error {
 	if err := c.
-		write(string("PASS " + c.cfg.OAuthToken)); err != nil {
+		Write(string("PASS " + c.cfg.OAuthToken)); err != nil {
 		return err
 	}
 	if err := c.
-		write(string("NICK " + c.cfg.OAuthToken)); err != nil {
+		Write(string("NICK " + c.cfg.OAuthToken)); err != nil {
 		return err
 	}
 	return nil
@@ -75,7 +75,7 @@ func (c *Client) setTPReader() {
 // Write receives a string and write it
 // into IRC TCP connection, don't need
 // to add "\r\n" at the end of the string.
-func (c *Client) write(msg string) error {
+func (c *Client) Write(msg string) error {
 	l := len(msg)
 
 	if l < 3 {
@@ -100,7 +100,7 @@ func (c *Client) listen() {
 			case msg.isNil:
 				continue
 			case msg.isPing:
-				c.write("PONG")
+				c.Write("PONG")
 			default:
 				c.Messages <- msg
 			}
