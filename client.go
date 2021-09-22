@@ -1,6 +1,7 @@
 package twitchirc
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"net/textproto"
@@ -9,9 +10,10 @@ import (
 
 // Client is the IRC connector.
 type Client struct {
-	cfg  *Config
-	tp   *textproto.Reader
-	conn *net.Conn
+	cfg      *Config
+	tp       *textproto.Reader
+	conn     net.Conn
+	Messages chan Message
 }
 
 const (
@@ -23,8 +25,16 @@ func NewClient(cfg *Config) (*Client, error) {
 	c := Client{cfg: cfg}
 
 	if err := c.setTCPConn(); err != nil {
-		return c, err
+		return &c, err
 	}
+
+	if err := c.connectIRC(); err != nil {
+		return &c, err
+	}
+
+	c.setTPReader()
+
+	go c.listen()
 
 	return &c, nil
 }
@@ -39,15 +49,33 @@ func (c *Client) setTCPConn() error {
 		if err != nil {
 			time.Sleep(time.Second)
 		} else {
-			c.conn = &conn
+			c.conn = conn
 		}
 	}
 	return err
 }
+
+func (c *Client) connectIRC() error {
+	if err := c.
+		write(string("PASS " + c.cfg.OAuthToken)); err != nil {
+		return err
+	}
+	if err := c.
+		write(string("NICK " + c.cfg.OAuthToken)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) setTPReader() {
+	reader := bufio.NewReader(c.conn)
+	c.tp = textproto.NewReader(reader)
+}
+
 // Write receives a string and write it
 // into IRC TCP connection, don't need
 // to add "\r\n" at the end of the string.
-func (c *Client) Write(msg string) error {
+func (c *Client) write(msg string) error {
 	l := len(msg)
 
 	if l < 3 {
@@ -61,4 +89,21 @@ func (c *Client) Write(msg string) error {
 	_, err := fmt.Fprint(c.conn, msg)
 
 	return err
+}
+
+func (c *Client) listen() {
+	for {
+		ircLine, err := c.tp.ReadLine()
+		if err != nil {
+			msg := parseLine(ircLine)
+			switch {
+			case msg.isNil:
+				continue
+			case msg.isPing:
+				c.write("PONG")
+			default:
+				c.Messages <- msg
+			}
+		}
+	}
 }
