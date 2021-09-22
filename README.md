@@ -40,6 +40,8 @@ func main() {
 		select {
 		case msg := <-client.Messages:
 			fmt.Println(msg)
+			// Can write messages with
+			// client.Write("Hello, World!")
 		case kill := <-stop:
 			break
 		}
