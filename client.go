@@ -22,21 +22,30 @@ const (
 
 // NewClient returns a Client instance
 func NewClient(cfg *Config) (*Client, error) {
-	c := Client{cfg: cfg}
-
-	if err := c.setTCPConn(); err != nil {
-		return &c, err
+	c := Client{
+		cfg:      cfg,
+		Messages: make(chan Message, 100),
 	}
 
-	if err := c.connectIRC(); err != nil {
+	if err := c.setConnection(); err != nil {
 		return &c, err
 	}
-
-	c.setTPReader()
 
 	go c.listen()
 
 	return &c, nil
+}
+
+func (c *Client) setConnection() error {
+	if err := c.setTCPConn(); err != nil {
+		return err
+	}
+
+	if err := c.connectIRC(); err != nil {
+		return err
+	}
+	c.setTPReader()
+	return nil
 }
 
 // setTCPConn dials and set TCP connection
@@ -99,6 +108,10 @@ func (c *Client) listen() {
 	for {
 		ircLine, err := c.tp.ReadLine()
 		if err != nil {
+			if err := c.setConnection(); err != nil {
+				break
+			}
+		} else {
 			msg := parseLine(ircLine)
 			switch {
 			case msg.isNil:
