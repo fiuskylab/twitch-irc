@@ -46,13 +46,25 @@ func parseLine(line string) (msg Message) {
 		return
 	}
 
-	msg.Sender = line[1:strings.IndexByte(line, byte('!'))]
+	exclamationPos := strings.IndexByte(line, byte('!'))
+
+	if exclamationPos == -1 {
+		msg.isNil = true
+		return
+	}
+
+	msg.Sender = line[1:exclamationPos]
 
 	lenUntilChannel := (3 * len(msg.Sender)) + 27
 
 	channelAndMessage := line[lenUntilChannel:]
 
 	colonPos := strings.IndexByte(channelAndMessage, byte(':'))
+
+	if colonPos == -1 {
+		msg.isNil = true
+		return
+	}
 
 	msg.Channel = channelAndMessage[:colonPos-1]
 
