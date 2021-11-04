@@ -8,9 +8,9 @@ import (
 
 func main() {
 	cfg := irc.Config{
-		OAuthToken:  "oauth:dskasdjkasd983819213nsdhj",
-		BotUsername: "bot_name",
-		Channel:     "channel_name",
+		OAuthToken:  "oauth:p9qj03vwu78rscpoasobjmnrt7xj0x",
+		BotUsername: "rafiuskybot",
+		Channels:    []string{"rafiusky", "EduardoRFS"},
 		MaxTries:    5,
 	}
 
@@ -18,6 +18,10 @@ func main() {
 
 	if err != nil {
 		// handler error
+		fmt.Println("Error!", err.Error())
+	}
+
+	if err := client.JoinChannel("00bex"); err != nil {
 		fmt.Println("Error!", err.Error())
 	}
 
