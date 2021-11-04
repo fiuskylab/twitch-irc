@@ -11,9 +11,9 @@ type Config struct {
 	// that was used to generate the OAuthToken.
 	BotUsername string
 
-	// Channel is the name of a Twitch's channel
-	// that you want to your bot to connect to.
-	Channel string
+	// Channels are the names of a each Twitch's
+	// channel that you want to your bot to connect to.
+	Channels []string
 
 	// MaxTries set de amount of times between
 	// each connection retry.

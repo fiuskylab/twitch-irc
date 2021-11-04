@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/textproto"
+	"strings"
 	"time"
 )
 
@@ -36,6 +37,30 @@ func NewClient(cfg *Config) (*Client, error) {
 	return &c, nil
 }
 
+// AddChannel connects the bot to a new channel
+func (c *Client) JoinChannel(name string) error {
+	name = strings.ToLower(name)
+	if _, ok := inArrayStr(c.cfg.Channels, name); ok {
+		return nil
+	}
+	if err := c.Write(string("JOIN #" + name)); err != nil {
+		return err
+	}
+	c.cfg.Channels = append(c.cfg.Channels, name)
+	return nil
+}
+
+// PartChannel leaves a Twitch's channel
+func (c *Client) PartChannel(name string) error {
+	name = strings.ToLower(name)
+	pos, ok := inArrayStr(c.cfg.Channels, name)
+	if !ok {
+		return nil
+	}
+	c.cfg.Channels = append(c.cfg.Channels[:pos], c.cfg.Channels[pos+1:]...)
+	return c.Write(string("PART #" + name))
+}
+
 func (c *Client) setConnection() error {
 	if err := c.setTCPConn(); err != nil {
 		return err
@@ -44,7 +69,20 @@ func (c *Client) setConnection() error {
 	if err := c.connectIRC(); err != nil {
 		return err
 	}
+
+	if err := c.joinChannels(); err != nil {
+		return err
+	}
 	c.setTPReader()
+	return nil
+}
+
+func (c *Client) joinChannels() error {
+	for _, ch := range c.cfg.Channels {
+		if err := c.JoinChannel(ch); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -71,10 +109,6 @@ func (c *Client) connectIRC() error {
 	}
 	if err := c.
 		Write(string("NICK " + c.cfg.BotUsername)); err != nil {
-		return err
-	}
-	if err := c.
-		Write(string("JOIN #" + c.cfg.Channel)); err != nil {
 		return err
 	}
 	return nil
