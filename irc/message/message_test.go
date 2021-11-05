@@ -4,7 +4,7 @@ import "testing"
 
 func TestParseLine(t *testing.T) {
 	{
-		got := parseLine("")
+		got := ParseLine("")
 		want := true
 		if !got.isNil {
 			t.Errorf("Want %t got %t", want, got.isNil)
@@ -12,7 +12,7 @@ func TestParseLine(t *testing.T) {
 	}
 
 	{
-		got := parseLine(":tmi.twitch.tv SOME RANDOM TEXT")
+		got := ParseLine(":tmi.twitch.tv SOME RANDOM TEXT")
 		want := true
 		if !got.isNil {
 			t.Errorf("Want %t got %t", want, got.isNil)
@@ -20,7 +20,7 @@ func TestParseLine(t *testing.T) {
 	}
 
 	{
-		got := parseLine("PING :tmi.twitch.tv")
+		got := ParseLine("PING :tmi.twitch.tv")
 		want := true
 		if !got.isPing {
 			t.Errorf("Want %t got %t", want, got.isNil)
@@ -28,7 +28,7 @@ func TestParseLine(t *testing.T) {
 	}
 
 	{
-		got := parseLine(":ricardinst!ricardinst@ricardinst.tmi.twitch.tv PRIVMSG #rafiusky :na real")
+		got := ParseLine(":ricardinst!ricardinst@ricardinst.tmi.twitch.tv PRIVMSG #rafiusky :na real")
 		want := Message{
 			Sender:  "ricardinst",
 			Text:    "na real",

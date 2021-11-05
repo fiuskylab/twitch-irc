@@ -1,4 +1,4 @@
-package twitchirc
+package message
 
 import (
 	"strings"
@@ -10,17 +10,20 @@ type Message struct {
 	// Channel is which channel the
 	// message was sent
 	Channel string
+
 	// Sender the username of who sent
 	// the Message
 	Sender string
+
 	// Text is the text sent to IRC
 	Text string
+
 	// isPing defines if the message was
 	// a PING from Twitch
-	isPing bool
+	IsPing bool
 
 	// isNil
-	isNil bool
+	IsNil bool
 }
 
 // Types of messages:
@@ -28,28 +31,28 @@ type Message struct {
 // :tmi.twitch.tv 004 rafiuskybot :-
 // :ricardinst!ricardinst@ricardinst.tmi.twitch.tv PRIVMSG #rafiusky :Shizukani shite kudasai!
 
-func parseLine(line string) (msg Message) {
+func ParseLine(line string) (msg Message) {
 	l := len(line)
 
 	if l < 5 {
-		msg.isNil = true
+		msg.IsNil = true
 		return
 	}
 
 	if line[:14] == ":tmi.twitch.tv" {
-		msg.isNil = true
+		msg.IsNil = true
 		return
 	}
 
 	if line[:4] == "PING" {
-		msg.isPing = true
+		msg.IsPing = true
 		return
 	}
 
 	exclamationPos := strings.IndexByte(line, byte('!'))
 
 	if exclamationPos == -1 {
-		msg.isNil = true
+		msg.IsNil = true
 		return
 	}
 
@@ -62,7 +65,7 @@ func parseLine(line string) (msg Message) {
 	colonPos := strings.IndexByte(channelAndMessage, byte(':'))
 
 	if colonPos == -1 {
-		msg.isNil = true
+		msg.IsNil = true
 		return
 	}
 

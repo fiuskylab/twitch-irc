@@ -1,11 +1,11 @@
-package twitchirc
+package helper
 
 import "testing"
 
 func TestHelper(t *testing.T) {
 	{
 		arr := []string{"A", "B", "C"}
-		pos, got := inArrayStr(arr, "B")
+		pos, got := InArrayStr(arr, "B")
 		want := true
 		wantPos := 1
 
@@ -18,7 +18,7 @@ func TestHelper(t *testing.T) {
 	}
 	{
 		arr := []string{"A", "B", "C"}
-		pos, got := inArrayStr(arr, "X")
+		pos, got := InArrayStr(arr, "X")
 		want := false
 		wantPos := -1
 

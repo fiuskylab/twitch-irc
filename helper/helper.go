@@ -1,6 +1,6 @@
-package twitchirc
+package helper
 
-func inArrayStr(arr []string, target string) (int, bool) {
+func InArrayStr(arr []string, target string) (int, bool) {
 	for pos, i := range arr {
 		if i == target {
 			return pos, true
