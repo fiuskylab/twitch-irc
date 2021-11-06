@@ -34,10 +34,10 @@ func NewAuth(c *internal.Common) *Auth {
 
 	go func() {
 		time.Sleep(time.Second * daySeconds)
-		c.setOAuth()
+		a.setOAuth()
 	}()
 
-	return c
+	return &a
 }
 
 const (
@@ -46,8 +46,8 @@ const (
 
 func (a *Auth) setOAuth() error {
 	formVals := url.Values{
-		"client_id":     {a.common.CLIENT_ID},
-		"client_secret": {a.common.CLIENT_SECRET},
+		"client_id":     {a.common.ClientID},
+		"client_secret": {a.common.ClientSecret},
 		"grant_type":    {"client_credentials"},
 		"scope":         {strings.Join(scope, " ")},
 	}
