@@ -38,6 +38,8 @@ func (c *Client) mountHTTPClient() {
 }
 
 func (c *Client) GetChannelInfo(username string) entity.ChannelInformation {
+	c.mountHTTPClient()
+
 	ent := entity.ChannelInformation{}
 	resp, err := c.httpClient.Get(searchChannelURL, url.Values{
 		"query": {username},

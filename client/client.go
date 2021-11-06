@@ -5,6 +5,7 @@ import (
 	"github.com/fiuskylab/twitch-irc/internal"
 	"github.com/fiuskylab/twitch-irc/irc/listener"
 	"github.com/fiuskylab/twitch-irc/irc/message"
+	twitchapi "github.com/fiuskylab/twitch-irc/twitchapi/client"
 )
 
 type Client struct {
@@ -12,6 +13,7 @@ type Client struct {
 	common      *internal.Common
 	ircListener *listener.Listener
 	Msg         chan message.Message
+	TwitchAPI   *twitchapi.Client
 }
 
 func NewClient(cfg *internal.Config) *Client {
@@ -22,6 +24,11 @@ func NewClient(cfg *internal.Config) *Client {
 		auth:        auth.NewAuth(common),
 		ircListener: listener.NewListener(common),
 		Msg:         make(chan message.Message, 100),
+	}
+
+	client.TwitchAPI = &twitchapi.Client{
+		Auth:   client.auth,
+		Common: common,
 	}
 
 	// Don't do this at home
