@@ -119,6 +119,12 @@ func (c *Client) setTPReader() {
 	c.tp = textproto.NewReader(reader)
 }
 
+// SendMessage writes a message to a specifc
+// IRC channel
+func (c *Client) SendMessage(channel, msg string) error {
+	return c.Write(fmt.Sprintf("PRIVMSG #%s : %s", channel, msg))
+}
+
 // Write receives a string and write it
 // into IRC TCP connection, don't need
 // to add "\r\n" at the end of the string.
