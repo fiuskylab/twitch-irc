@@ -6,6 +6,7 @@ require go.uber.org/zap v1.19.1
 
 require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
+	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/vicanso/go-axios v1.3.2 // indirect
 	github.com/vicanso/http-trace v1.0.5 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
